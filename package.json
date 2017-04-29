@@ -36,7 +36,7 @@
   },
   "devDependencies": {
     "camo-purge": "latest",
-    "coveralls": "^latest",
+    "coveralls": "latest",
     "hue-simulator": "github:hobbyquaker/hueSimulator",
     "mocha": "latest",
     "nyc": "latest",
