@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 require('should');
 
 const cp = require('child_process');

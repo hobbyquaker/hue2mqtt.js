@@ -8,7 +8,7 @@
   },
   "preferGlobal": true,
   "scripts": {
-    "test": "camo-purge ; xo --space 4 --ignore test.js && sudo node_modules/.bin/nyc node_modules/.bin/mocha ./test.js && node_modules/.bin/nyc report --reporter=text-lcov | node_modules/.bin/coveralls --force"
+    "test": "camo-purge ; xo --space 4 --ignore test.js && sudo node_modules/.bin/nyc node_modules/.bin/mocha test.js && node_modules/.bin/nyc report --reporter=text-lcov | node_modules/.bin/coveralls --force"
   },
   "repository": {
     "type": "git",
