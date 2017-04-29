@@ -128,7 +128,7 @@ describe('start daemons', () => {
     });
     it('hue2mqtt should start without error', function (done) {
         this.timeout(20000);
-        subscribe('hue', /hue2mqtt [0-9.]+ starting/, data => {
+        subscribe('hue', /hue2mqtt\.js [0-9.]+ starting/, data => {
             done();
         });
         startHue();
