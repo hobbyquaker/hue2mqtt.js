@@ -1,6 +1,6 @@
 # hue2mqtt.js
 
-[![NPM version](https://badge.fury.io/js/hue2mqtt.svg)](http://badge.fury.io/js/hue2mqtt)
+[![NPM version](https://badge.fury.io/js/hue2mqtt.js.svg)](http://badge.fury.io/js/hue2mqtt.js)
 [![Dependency Status](https://img.shields.io/gemnasium/hobbyquaker/hue2mqtt.js.svg?maxAge=2592000)](https://gemnasium.com/github.com/hobbyquaker/hue2mqtt.js)
 [![Build Status](https://travis-ci.org/hobbyquaker/hue2mqtt.js.svg?branch=master)](https://travis-ci.org/hobbyquaker/hue2mqtt.js)
 [![Coverage Status](https://coveralls.io/repos/github/hobbyquaker/hue2mqtt.js/badge.svg?branch=master)](https://coveralls.io/github/hobbyquaker/hue2mqtt.js?branch=master)
@@ -24,7 +24,7 @@ original hue2mqtt are:
 
 Prerequisites: [Node.js](https://nodejs.org) >= 6.0
 
-```sudo npm install -g hue2mqtt```
+```sudo npm install -g hue2mqtt.js```
 
 
 ### Usage 
