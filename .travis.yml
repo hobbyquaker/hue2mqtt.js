@@ -1,9 +1,7 @@
 language: node_js
 node_js:
   - "6"
-sudo: required
 before_install:
-  - sudo update-alternatives --install /usr/bin/node nodejs /usr/bin/nodejs 100
   - sudo apt-add-repository ppa:mosquitto-dev/mosquitto-ppa -y
   - sudo apt-get update -y
   - sudo apt-get install mosquitto -y
