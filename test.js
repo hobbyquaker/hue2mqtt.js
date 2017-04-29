@@ -118,14 +118,16 @@ process.on('exit', () => {
 });
 
 describe('start daemons', () => {
-    it('hue-simulator should start without error', (done) => {
+    it('hue-simulator should start without error', function (done)  {
+        this.timeout(20000);
         subscribe('sim', /hue simulator listening/, data => {
             done();
         });
         startSim();
 
     });
-    it('hue2mqtt should start without error', (done) => {
+    it('hue2mqtt should start without error', function (done) {
+        this.timeout(20000);
         subscribe('hue', /hue2mqtt [0-9.]+ starting/, data => {
             done();
         });
