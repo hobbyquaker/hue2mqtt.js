@@ -375,7 +375,7 @@ function publishChanges(light) {
                 } else if ((lightStates[light.id] === 'ct') && (['bri', 'ct'].indexOf(datapoint) !== -1)) {
                     rgbChange = true;
                 }
-                mqttPublish(topic + '/' + datapoint, {val: changes[datapoint]});
+                mqttPublish(topic + '/' + datapoint, {val: changes[datapoint]}, {retain: true});
             });
             if (rgbChange && lightStates[light.id].colormode === 'ct') {
                 const c = Math.floor((lightStates[light.id].ct - 153) / 1.2) - 60;
@@ -388,13 +388,13 @@ function publishChanges(light) {
                     f = 255 - c;
                     color = 'ffff' + (0 + f.toString(16)).slice(-2);
                 }
-                mqttPublish(topic + '/rgb', {val: color});
+                mqttPublish(topic + '/rgb', {val: color}, {retain: true});
             } else if (rgbChange) {
                 mqttPublish(topic + '/rgb', {val: hsl2rgb(
                     (lightStates[light.id].hue / 65535) * 360,
                     lightStates[light.id].sat / 254,
                     lightStates[light.id].bri / 254
-                )});
+                )}, {retain: true});
             }
         }
     }
