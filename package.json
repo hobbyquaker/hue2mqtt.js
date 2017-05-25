@@ -1,6 +1,6 @@
 {
   "name": "hue2mqtt.js",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Gateway between a Philips Hue bridge and MQTT",
   "main": "index.js",
   "bin": {
@@ -29,10 +29,10 @@
   "dependencies": {
     "mqtt": "^2.6.2",
     "node-hue-api": "^2.4.2",
-    "obj-ease": "0.0.3",
+    "obj-ease": "^1.0.0",
     "persist-json": "^1.0.1",
     "yalm": "^4.0.2",
-    "yargs": "^7.1.0"
+    "yargs": "^8.0.1"
   },
   "devDependencies": {
     "camo-purge": "latest",
