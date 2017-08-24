@@ -364,7 +364,7 @@ function publishChanges(light) {
             val: lightStates[light.id].on ? lightStates[light.id].bri : 0,
             hue_state: lightStates[light.id] // eslint-disable-line camelcase
         };
-        const topic = config.name + '/status/lights/' + light.name;
+        const topic = config.name + '/status/lights/' + ((config.disableNames) ? light.id : light.name);
         mqttPublish(topic, payload, {retain: true});
 
         if (config.publishDistinct) {

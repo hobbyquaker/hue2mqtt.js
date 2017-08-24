@@ -8,6 +8,7 @@ const config = require('yargs')
     .describe('p', 'light status polling interval in seconds')
     .describe('d', 'publish distinct light states')
     .describe('h', 'show help')
+    .describe('disable-names', 'use light ID instead of name when publishing changes')
     .alias({
         b: 'bridge',
         h: 'help',
@@ -21,7 +22,8 @@ const config = require('yargs')
         u: 'mqtt://127.0.0.1',
         n: 'hue',
         v: 'info',
-        p: 10
+        p: 10,
+        'disable-names': false
     })
     .version()
     .help('help')
