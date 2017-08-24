@@ -18,12 +18,12 @@ const config = require('yargs')
         p: 'polling-interval',
         d: 'publish-distinct'
     })
+    .boolean('disable-names')
     .default({
         u: 'mqtt://127.0.0.1',
         n: 'hue',
         v: 'info',
-        p: 10,
-        'disable-names': false
+        p: 10
     })
     .version()
     .help('help')
