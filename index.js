@@ -48,12 +48,12 @@ function start() {
 
     log.info('mqtt trying to connect', config.url);
 
-    mqtt = Mqtt.connect(config.url, {will: {topic: config.name + '/connected', payload: '0', retain: true}});
+    mqtt = Mqtt.connect(config.url, {will: {topic: config.name + '/connected', payload: '0', retain: (config.mqttRetain)}});
 
     mqtt.on('connect', () => {
         mqttConnected = true;
         log.info('mqtt connected', config.url);
-        mqtt.publish(config.name + '/connected', bridgeConnected ? '2' : '1', {retain: true});
+        mqtt.publish(config.name + '/connected', bridgeConnected ? '2' : '1', {retain: (config.mqttRetain)});
         log.info('mqtt subscribe', config.name + '/set/#');
         mqtt.subscribe(config.name + '/set/#');
     });
@@ -284,7 +284,7 @@ function bridgeConnect() {
     if (!bridgeConnected) {
         bridgeConnected = true;
         log.info('bridge connected');
-        mqttPublish(config.name + '/connected', '2', {retain: true});
+        mqttPublish(config.name + '/connected', '2', {retain: (config.mqttRetain)});
     }
 }
 
@@ -292,7 +292,7 @@ function bridgeDisconnect() {
     if (bridgeConnected) {
         bridgeConnected = false;
         log.error('bridge disconnected');
-        mqttPublish(config.name + '/connected', '1', {retain: true});
+        mqttPublish(config.name + '/connected', '1', {retain: (config.mqttRetain)});
     }
 }
 
@@ -365,7 +365,7 @@ function publishChanges(light) {
             hue_state: lightStates[light.id] // eslint-disable-line camelcase
         };
         const topic = config.name + '/status/lights/' + ((config.disableNames) ? light.id : light.name);
-        mqttPublish(topic, payload, {retain: true});
+        mqttPublish(topic, payload, {retain: (config.mqttRetain)});
 
         if (config.publishDistinct) {
             let rgbChange = false;
@@ -375,7 +375,7 @@ function publishChanges(light) {
                 } else if ((lightStates[light.id] === 'ct') && (['bri', 'ct'].indexOf(datapoint) !== -1)) {
                     rgbChange = true;
                 }
-                mqttPublish(topic + '/' + datapoint, {val: changes[datapoint]}, {retain: true});
+                mqttPublish(topic + '/' + datapoint, {val: changes[datapoint]}, {retain: (config.mqttRetain)});
             });
             if (rgbChange && lightStates[light.id].colormode === 'ct') {
                 const c = Math.floor((lightStates[light.id].ct - 153) / 1.2) - 60;
@@ -388,13 +388,13 @@ function publishChanges(light) {
                     f = 255 - c;
                     color = 'ffff' + (0 + f.toString(16)).slice(-2);
                 }
-                mqttPublish(topic + '/rgb', {val: color}, {retain: true});
+                mqttPublish(topic + '/rgb', {val: color}, {retain: (config.mqttRetain)});
             } else if (rgbChange) {
                 mqttPublish(topic + '/rgb', {val: hsl2rgb(
                     (lightStates[light.id].hue / 65535) * 360,
                     lightStates[light.id].sat / 254,
                     lightStates[light.id].bri / 254
-                )}, {retain: true});
+                )}, {retain: (config.mqttRetain)});
             }
         }
     }
