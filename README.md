@@ -27,6 +27,12 @@ Prerequisites: [Node.js](https://nodejs.org) >= 6.0
 ```sudo npm install -g hue2mqtt.js```
 
 
+#### Docker
+
+[dersimn](https://github.com/dersimn) created a 
+[dockerized version of hue2mqtt.js](https://github.com/dersimn/docker-hue2mqtt.js).
+
+
 ### Usage 
 
 ```
