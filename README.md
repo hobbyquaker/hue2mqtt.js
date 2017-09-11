@@ -35,7 +35,7 @@ Usage: hue2mqtt [options]
 Options:
   -v, --verbosity         possible values: "error", "warn", "info", "debug"
                                                                [default: "info"]
-  -n, --name              instance name. used as mqtt client id and as topic 
+  -n, --name              instance name. used as mqtt client id and as topic
                           prefix                                [default: "hue"]
   -u, --url               mqtt broker url. See
                           https://github.com/mqttjs/MQTT.js#connect-using-a-url
@@ -45,7 +45,12 @@ Options:
   -p, --polling-interval  light status polling interval in seconds [default: 10]
   -d, --publish-distinct  publish distinct light states
   -h, --help              Show help                                    [boolean]
+  --disable-names         use light ID instead of name when publishing changes
+                                                                       [boolean]
+  --mqtt-retain           enable/disable retain flag for mqtt messages
+                                                       [boolean] [default: true]
   --version               Show version number                          [boolean]
+
 ```  
 
 I suggest to use [pm2](http://pm2.keymetrics.io/) to manage the hm2mqtt process (start on system boot, manage log files, 
