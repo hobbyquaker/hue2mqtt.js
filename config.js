@@ -1,4 +1,5 @@
 const config = require('yargs')
+    .env('HUE2MQTT')
     .usage('Usage: $0 [options]')
     .describe('v', 'possible values: "error", "warn", "info", "debug"')
     .describe('n', 'instance name. used as mqtt client id and as topic prefix')
@@ -7,6 +8,8 @@ const config = require('yargs')
     .describe('p', 'light status polling interval in seconds')
     .describe('d', 'publish distinct light states')
     .describe('h', 'show help')
+    .describe('disable-names', 'use light ID instead of name when publishing changes')
+    .describe('mqtt-retain', 'enable/disable retain flag for mqtt messages')
     .alias({
         b: 'bridge',
         h: 'help',
@@ -16,11 +19,14 @@ const config = require('yargs')
         p: 'polling-interval',
         d: 'publish-distinct'
     })
+    .boolean('disable-names')
+    .boolean('mqtt-retain')
     .default({
         u: 'mqtt://127.0.0.1',
         n: 'hue',
         v: 'info',
-        p: 10
+        p: 10,
+        'mqtt-retain': true
     })
     .version()
     .help('help')
