@@ -360,8 +360,13 @@ function publishChanges(light) {
     });
     const changes = oe.extend(lightStates[light.id], light.state);
     if (changes) {
+        if ( typeof lightStates[light.id].bri !== "undefined" ) {
+            var defaultVal = lightStates[light.id].on ? lightStates[light.id].bri : 0;
+        } else {
+            var defaultVal = lightStates[light.id].on;
+        }
         const payload = {
-            val: lightStates[light.id].on ? lightStates[light.id].bri : 0,
+            val: defaultVal,
             hue_state: lightStates[light.id] // eslint-disable-line camelcase
         };
         const topic = config.name + '/status/lights/' + (config.disableNames ? light.id : light.name);
