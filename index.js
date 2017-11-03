@@ -46,13 +46,18 @@ function start() {
         });
     }
 
-    log.info('mqtt trying to connect', config.url);
+    log.info('mqtt trying to connect', config.mqttUrl);
 
-    mqtt = Mqtt.connect(config.url, {will: {topic: config.name + '/connected', payload: '0', retain: (config.mqttRetain)}});
+    mqtt = Mqtt.connect(config.mqttUrl, {
+        clientId: config.name + '_' + Math.random().toString(16).substr(2, 8),
+        will: {topic: config.name + '/connected', payload: '0', retain: (config.mqttRetain)},
+        username: config.mqttUsername,
+        password: config.mqttPassword
+    });
 
     mqtt.on('connect', () => {
         mqttConnected = true;
-        log.info('mqtt connected', config.url);
+        log.info('mqtt connected', config.mqttUrl);
         mqtt.publish(config.name + '/connected', bridgeConnected ? '2' : '1', {retain: config.mqttRetain});
         log.info('mqtt subscribe', config.name + '/set/#');
         mqtt.subscribe(config.name + '/set/#');
@@ -61,7 +66,7 @@ function start() {
     mqtt.on('close', () => {
         if (mqttConnected) {
             mqttConnected = false;
-            log.info('mqtt closed ' + config.url);
+            log.info('mqtt closed ' + config.mqttUrl);
         }
     });
 

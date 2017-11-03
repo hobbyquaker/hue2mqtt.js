@@ -1,35 +1,39 @@
-const config = require('yargs')
+const pkg = require('./package.json');
+
+module.exports = require('yargs')
     .env('HUE2MQTT')
-    .usage('Usage: $0 [options]')
-    .describe('v', 'possible values: "error", "warn", "info", "debug"')
-    .describe('n', 'instance name. used as mqtt client id and as topic prefix')
-    .describe('u', 'mqtt broker url. See https://github.com/mqttjs/MQTT.js#connect-using-a-url')
-    .describe('b', 'hue bridge address. if ommited bridge will be searched via http://meethue.com/api/nupnp')
-    .describe('p', 'light status polling interval in seconds')
-    .describe('d', 'publish distinct light states')
-    .describe('h', 'show help')
+    .usage(pkg.name + ' ' + pkg.version + '\n' + pkg.description + '\n\nUsage: $0 [options]')
+    .describe('verbosity', 'possible values: "error", "warn", "info", "debug"')
+    .describe('name', 'instance name. used as mqtt client id and as prefix for connected topic')
+    .describe('mqtt-url', 'mqtt broker url. See https://github.com/mqttjs/MQTT.js#connect-using-a-url')
+    .describe('mqtt-username', 'mqtt broker username')
+    .describe('mqtt-password', 'mqtt broker password')
+    .describe('bridge', 'hue bridge address. if ommited bridge will be searched via http://meethue.com/api/nupnp')
+    .describe('polling-interval', 'light status polling interval in seconds')
+    .describe('publish-distinct', 'publish distinct light states')
+    .describe('help', 'show help')
     .describe('disable-names', 'use light ID instead of name when publishing changes')
     .describe('mqtt-retain', 'enable/disable retain flag for mqtt messages')
     .alias({
-        b: 'bridge',
         h: 'help',
+        m: 'mqtt-url',
         n: 'name',
-        u: 'url',
+        p: 'mqtt-password',
+        u: 'mqtt-username',
         v: 'verbosity',
-        p: 'polling-interval',
+        b: 'bridge',
+        i: 'polling-interval',
         d: 'publish-distinct'
     })
     .boolean('disable-names')
     .boolean('mqtt-retain')
     .default({
-        u: 'mqtt://127.0.0.1',
-        n: 'hue',
-        v: 'info',
-        p: 10,
+        'mqtt-url': 'mqtt://127.0.0.1',
+        name: 'hue',
+        verbosity: 'info',
+        'polling-interval': 10,
         'mqtt-retain': true
     })
     .version()
     .help('help')
     .argv;
-
-module.exports = config;
