@@ -365,10 +365,11 @@ function publishChanges(light) {
     });
     const changes = oe.extend(lightStates[light.id], light.state);
     if (changes) {
-        if ( typeof lightStates[light.id].bri !== "undefined" ) {
-            var defaultVal = lightStates[light.id].on ? lightStates[light.id].bri : 0;
+        let defaultVal;
+        if (typeof lightStates[light.id].bri === 'undefined') {
+            defaultVal = lightStates[light.id].on;
         } else {
-            var defaultVal = lightStates[light.id].on;
+            defaultVal = lightStates[light.id].on ? lightStates[light.id].bri : 0;
         }
         const payload = {
             val: defaultVal,
