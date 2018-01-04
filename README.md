@@ -24,7 +24,7 @@ original hue2mqtt are:
 
 Prerequisites: [Node.js](https://nodejs.org) >= 6.0
 
-```sudo npm install -g hue2mqtt.js```
+```sudo npm install -g hue2mqtt```
 
 
 #### Docker

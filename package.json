@@ -1,5 +1,5 @@
 {
-  "name": "hue2mqtt.js",
+  "name": "hue2mqtt",
   "version": "1.1.1",
   "description": "Gateway between a Philips Hue bridge and MQTT",
   "main": "index.js",
