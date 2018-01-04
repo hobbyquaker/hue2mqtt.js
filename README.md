@@ -1,5 +1,6 @@
 # hue2mqtt.js
 
+[![mqtt-smarthome](https://img.shields.io/badge/mqtt-smarthome-blue.svg)](https://github.com/mqtt-smarthome/mqtt-smarthome)
 [![NPM version](https://badge.fury.io/js/hue2mqtt.js.svg)](http://badge.fury.io/js/hue2mqtt.js)
 [![Dependency Status](https://img.shields.io/gemnasium/hobbyquaker/hue2mqtt.js.svg?maxAge=2592000)](https://gemnasium.com/github.com/hobbyquaker/hue2mqtt.js)
 [![Build Status](https://travis-ci.org/hobbyquaker/hue2mqtt.js.svg?branch=master)](https://travis-ci.org/hobbyquaker/hue2mqtt.js)
