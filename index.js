@@ -46,13 +46,18 @@ function start() {
         });
     }
 
-    log.info('mqtt trying to connect', config.url);
+    log.info('mqtt trying to connect', config.mqttUrl);
 
-    mqtt = Mqtt.connect(config.url, {will: {topic: config.name + '/connected', payload: '0', retain: (config.mqttRetain)}});
+    mqtt = Mqtt.connect(config.mqttUrl, {
+        clientId: config.name + '_' + Math.random().toString(16).substr(2, 8),
+        will: {topic: config.name + '/connected', payload: '0', retain: (config.mqttRetain)},
+        username: config.mqttUsername,
+        password: config.mqttPassword
+    });
 
     mqtt.on('connect', () => {
         mqttConnected = true;
-        log.info('mqtt connected', config.url);
+        log.info('mqtt connected', config.mqttUrl);
         mqtt.publish(config.name + '/connected', bridgeConnected ? '2' : '1', {retain: config.mqttRetain});
         log.info('mqtt subscribe', config.name + '/set/#');
         mqtt.subscribe(config.name + '/set/#');
@@ -61,7 +66,7 @@ function start() {
     mqtt.on('close', () => {
         if (mqttConnected) {
             mqttConnected = false;
-            log.info('mqtt closed ' + config.url);
+            log.info('mqtt closed ' + config.mqttUrl);
         }
     });
 
@@ -360,8 +365,13 @@ function publishChanges(light) {
     });
     const changes = oe.extend(lightStates[light.id], light.state);
     if (changes) {
+        if ( typeof lightStates[light.id].bri !== "undefined" ) {
+            var defaultVal = lightStates[light.id].on ? lightStates[light.id].bri : 0;
+        } else {
+            var defaultVal = lightStates[light.id].on;
+        }
         const payload = {
-            val: lightStates[light.id].on ? lightStates[light.id].bri : 0,
+            val: defaultVal,
             hue_state: lightStates[light.id] // eslint-disable-line camelcase
         };
         const topic = config.name + '/status/lights/' + (config.disableNames ? light.id : light.name);
