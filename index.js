@@ -51,8 +51,7 @@ function start() {
     mqtt = Mqtt.connect(config.mqttUrl, {
         clientId: config.name + '_' + Math.random().toString(16).substr(2, 8),
         will: {topic: config.name + '/connected', payload: '0', retain: (config.mqttRetain)},
-        username: config.mqttUsername,
-        password: config.mqttPassword
+        rejectUnauthorized: !config.insecure
     });
 
     mqtt.on('connect', () => {

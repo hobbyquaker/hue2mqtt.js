@@ -44,9 +44,7 @@ Options:
                                                                [default: "info"]
   -n, --name              instance name. used as mqtt client id and as topic
                           prefix                                [default: "hue"]
-  -u, --url               mqtt broker url. See
-                          https://github.com/mqttjs/MQTT.js#connect-using-a-url
-                                                   [default: "mqtt://127.0.0.1"]
+  -m, --mqtt-url          mqtt broker url.          default: "mqtt://127.0.0.1"]
   -b, --bridge            hue bridge address. if ommited bridge will be searched
                           via http://meethue.com/api/nupnp
   -p, --polling-interval  light status polling interval in seconds [default: 10]
@@ -56,6 +54,8 @@ Options:
                                                                        [boolean]
   --mqtt-retain           enable/disable retain flag for mqtt messages
                                                        [boolean] [default: true]
+  --insecure              allow tls connections with invalid certificates
+                                                                       [boolean]
   --version               Show version number                          [boolean]
 
 ```  
@@ -64,6 +64,11 @@ All config options can be set via environment variables also (uppercase, undersc
 
 I suggest to use [pm2](http://pm2.keymetrics.io/) to manage the hm2mqtt process (start on system boot, manage log files, 
 ...)
+
+#### MQTT URL
+
+You can add Username/Password for the connection to the MQTT broker to the MQTT URL param like e.g. 
+`mqtt://user:pass@broker`. For a secure connection via TLS use `mqtts://` as URL scheme.
 
 
 ## Topics and Payloads

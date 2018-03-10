@@ -5,21 +5,19 @@ module.exports = require('yargs')
     .usage(pkg.name + ' ' + pkg.version + '\n' + pkg.description + '\n\nUsage: $0 [options]')
     .describe('verbosity', 'possible values: "error", "warn", "info", "debug"')
     .describe('name', 'instance name. used as mqtt client id and as prefix for connected topic')
-    .describe('mqtt-url', 'mqtt broker url. See https://github.com/mqttjs/MQTT.js#connect-using-a-url')
-    .describe('mqtt-username', 'mqtt broker username')
-    .describe('mqtt-password', 'mqtt broker password')
+    .describe('mqtt-url', 'mqtt broker url.')
     .describe('bridge', 'hue bridge address. if ommited bridge will be searched via http://meethue.com/api/nupnp')
     .describe('polling-interval', 'light status polling interval in seconds')
     .describe('publish-distinct', 'publish distinct light states')
     .describe('help', 'show help')
     .describe('disable-names', 'use light ID instead of name when publishing changes')
     .describe('mqtt-retain', 'enable/disable retain flag for mqtt messages')
+    .describe('insecure', 'allow tls connections with invalid certificates')
+    .boolean('insecure')
     .alias({
         h: 'help',
         m: 'mqtt-url',
         n: 'name',
-        p: 'mqtt-password',
-        u: 'mqtt-username',
         v: 'verbosity',
         b: 'bridge',
         i: 'polling-interval',
