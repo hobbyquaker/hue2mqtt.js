@@ -142,7 +142,11 @@ function setGroupLightState(name, state) {
         hue.setGroupLightState(id, state, (err, res) => {
             if (err) {
                 log.error('setGroupLightState', name, err.toString());
-                bridgeDisconnect();
+                if (err.message.endsWith('is not modifiable. Device is set to off.')) {
+                    bridgeConnect();
+                } else {
+                    bridgeDisconnect();
+                }
             } else if (!res) {
                 log.error('setGroupLightState', name, 'failed');
             }
@@ -167,7 +171,11 @@ function setLightState(name, state) {
         hue.setLightState(id, state, (err, res) => {
             if (err) {
                 log.error('setLightState', err.toString());
-                bridgeDisconnect();
+                if (err.message.endsWith('is not modifiable. Device is set to off.')) {
+                    bridgeConnect();
+                } else {
+                    bridgeDisconnect();
+                }
             } else if (res) {
                 bridgeConnect();
                 publishChanges({id, state, name});
