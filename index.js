@@ -98,7 +98,7 @@ function start() {
         } else if (!isNaN(payload)) {
             payload = parseFloat(payload);
         }
-        const [, method, type, name, datapoint] = topic.split('/');
+        const [, method, type, name, datapoint] = topic.substr(config.name.length).split('/');
 
         switch (method) {
             case 'set':
