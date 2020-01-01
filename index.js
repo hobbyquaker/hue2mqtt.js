@@ -308,6 +308,10 @@ function bridgeDisconnect() {
     }
 }
 
+function cleanName (name) {
+  return name.replace(/ /, '_')
+}
+
 function getLights(callback) {
     log.debug('hue > getLights');
     hue.lights((err, res) => {
@@ -317,7 +321,7 @@ function getLights(callback) {
         } else if (res.lights && res.lights.length > 0) {
             bridgeConnect();
             res.lights.forEach(light => {
-                lightNames[light.name] = light.id;
+                lightNames[(config.replaceSpaces ? cleanName(light.name) : light.name)] = light.id;
                 publishChanges(light);
             });
             if (typeof callback === 'function') {
@@ -382,7 +386,8 @@ function publishChanges(light) {
             val: defaultVal,
             hue_state: lightStates[light.id] // eslint-disable-line camelcase
         };
-        const topic = config.name + '/status/lights/' + (config.disableNames ? light.id : light.name);
+        const lightName = config.replaceSpaces ? cleanName(light.name) : light.name;
+        const topic = config.name + '/status/lights/' + (config.disableNames ? light.id : lightName);
         mqttPublish(topic, payload, {retain: config.mqttRetain});
 
         if (config.publishDistinct) {
