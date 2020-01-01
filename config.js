@@ -13,6 +13,7 @@ module.exports = require('yargs')
     .describe('disable-names', 'use light ID instead of name when publishing changes')
     .describe('mqtt-retain', 'enable/disable retain flag for mqtt messages')
     .describe('insecure', 'allow tls connections with invalid certificates')
+    .describe('replace-spaces', 'replace spaces in light names with an underscore')
     .boolean('insecure')
     .alias({
         h: 'help',
@@ -24,6 +25,7 @@ module.exports = require('yargs')
         d: 'publish-distinct'
     })
     .boolean('disable-names')
+    .boolean('replace-spaces')
     .boolean('mqtt-retain')
     .default({
         'mqtt-url': 'mqtt://127.0.0.1',

@@ -5,6 +5,7 @@ const oe = require('obj-ease');
 const Mqtt = require('mqtt');
 const Hue = require('node-hue-api');
 const pjson = require('persist-json')('hue2mqtt');
+const color = require('color');
 const hsl2rgb = require('./hsl2rgb.js');
 const config = require('./config.js');
 const pkg = require('./package.json');
@@ -49,7 +50,7 @@ function start() {
     log.info('mqtt trying to connect', config.mqttUrl);
 
     mqtt = Mqtt.connect(config.mqttUrl, {
-        clientId: config.name + '_' + Math.random().toString(16).substr(2, 8),
+        clientId: config.name + '_' + Math.random().toString(16).slice(2, 10),
         will: {topic: config.name + '/connected', payload: '0', retain: (config.mqttRetain)},
         rejectUnauthorized: !config.insecure
     });
@@ -85,11 +86,11 @@ function start() {
         payload = payload.toString();
         log.debug('mqtt <', topic, payload);
 
-        if (payload.indexOf('{') !== -1) {
+        if (payload.includes('{')) {
             try {
                 payload = JSON.parse(payload);
-            } catch (err) {
-                log.error(err.toString());
+            } catch (error) {
+                log.error(error.toString());
             }
         } else if (payload === 'false') {
             payload = false;
@@ -98,6 +99,7 @@ function start() {
         } else if (!isNaN(payload)) {
             payload = parseFloat(payload);
         }
+
         const [, method, type, name, datapoint] = topic.split('/');
 
         switch (method) {
@@ -111,6 +113,7 @@ function start() {
                         } else {
                             setValue(type, name, payload);
                         }
+
                         break;
 
                     case 'groups':
@@ -121,11 +124,13 @@ function start() {
                         } else {
                             setValue(type, name, payload);
                         }
+
                         break;
 
                     default:
                         log.error('unknown type', type);
                 }
+
                 break;
 
             default:
@@ -150,6 +155,7 @@ function setGroupLightState(name, state) {
             } else if (!res) {
                 log.error('setGroupLightState', name, 'failed');
             }
+
             getLights();
         });
         setTimeout(() => {
@@ -166,8 +172,20 @@ function setLightState(name, state) {
     if (!id && lightStates[name]) {
         id = name;
     }
+
     if (id) {
         log.debug('hue > setLightState', id, state);
+        if (state.rgb) {
+            try {
+                const c = color(state.rgb).hsl();
+                state.hue = c.hue;
+                state.sat = c.saturationl;
+                delete state.rgb;
+            } catch (error) {
+                log.error('Error converting color %j', error);
+            }
+        }
+
         hue.setLightState(id, state, (err, res) => {
             if (err) {
                 log.error('setLightState', err.toString());
@@ -212,6 +230,7 @@ function setValue(type, name, payload) {
             payload = {on: true, bri: payload};
         }
     }
+
     if (type === 'lights') {
         setLightState(name, payload);
     } else if (type === 'groups') {
@@ -225,6 +244,7 @@ function mqttPublish(topic, payload, options) {
     } else if (typeof payload !== 'string') {
         payload = JSON.stringify(payload);
     }
+
     log.debug('mqtt >', topic, payload);
     mqtt.publish(topic, payload, options);
 }
@@ -252,6 +272,7 @@ function initApi() {
         registerUser();
         return;
     }
+
     hue.config((err, bridgeConfig) => {
         if (err) {
             log.error('bridge connect', err.toString());
@@ -268,6 +289,7 @@ function initApi() {
                 if (bridgeConfig.swupdate.updatestate && bridgeConfig.swupdate.devicetypes.bridge) {
                     log.warn('bridge update available:', bridgeConfig.swupdate.text);
                 }
+
                 getLights(getGroups);
             }
         }
@@ -308,6 +330,10 @@ function bridgeDisconnect() {
     }
 }
 
+function cleanName(name) {
+    return name.replace(/ /, '_');
+}
+
 function getLights(callback) {
     log.debug('hue > getLights');
     hue.lights((err, res) => {
@@ -317,16 +343,18 @@ function getLights(callback) {
         } else if (res.lights && res.lights.length > 0) {
             bridgeConnect();
             res.lights.forEach(light => {
-                lightNames[light.name] = light.id;
+                lightNames[(config.replaceSpaces ? cleanName(light.name) : light.name)] = light.id;
                 publishChanges(light);
             });
             if (typeof callback === 'function') {
                 log.debug('got', res.lights.length, 'lights');
             }
         }
+
         if (typeof callback === 'function') {
             callback();
         }
+
         pollingTimer = setTimeout(getLights, pollingInterval);
     });
 }
@@ -343,6 +371,7 @@ function getGroups(callback) {
                 groupNames[group.name] = group.id;
             });
         }
+
         if (typeof callback === 'function') {
             callback();
         }
@@ -365,8 +394,9 @@ function publishChanges(light) {
     if (!lightStates[light.id]) {
         lightStates[light.id] = {};
     }
+
     Object.keys(light.state).forEach(dp => {
-        if (allowedDatapoints.indexOf(dp) === -1) {
+        if (!allowedDatapoints.includes(dp)) {
             delete light.state[dp];
         }
     });
@@ -378,21 +408,24 @@ function publishChanges(light) {
         } else {
             defaultVal = lightStates[light.id].on ? lightStates[light.id].bri : 0;
         }
+
         const payload = {
             val: defaultVal,
             hue_state: lightStates[light.id] // eslint-disable-line camelcase
         };
-        const topic = config.name + '/status/lights/' + (config.disableNames ? light.id : light.name);
+        const lightName = config.replaceSpaces ? cleanName(light.name) : light.name;
+        const topic = config.name + '/status/lights/' + (config.disableNames ? light.id : lightName);
         mqttPublish(topic, payload, {retain: config.mqttRetain});
 
         if (config.publishDistinct) {
             let rgbChange = false;
             Object.keys(changes).forEach(datapoint => {
-                if ((lightStates[light.id] !== 'ct') && (['bri', 'hue', 'sat', 'xy', 'ct'].indexOf(datapoint) !== -1)) {
+                if ((lightStates[light.id] !== 'ct') && (['bri', 'hue', 'sat', 'xy', 'ct'].includes(datapoint))) {
                     rgbChange = true;
-                } else if ((lightStates[light.id] === 'ct') && (['bri', 'ct'].indexOf(datapoint) !== -1)) {
+                } else if ((lightStates[light.id] === 'ct') && (['bri', 'ct'].includes(datapoint))) {
                     rgbChange = true;
                 }
+
                 mqttPublish(topic + '/' + datapoint, {val: changes[datapoint]}, {retain: config.mqttRetain});
             });
             if (rgbChange && lightStates[light.id].colormode === 'ct') {
@@ -406,6 +439,7 @@ function publishChanges(light) {
                     f = 255 - c;
                     color = 'ffff' + (0 + f.toString(16)).slice(-2);
                 }
+
                 mqttPublish(topic + '/rgb', {val: color}, {retain: config.mqttRetain});
             } else if (rgbChange) {
                 mqttPublish(topic + '/rgb', {val: hsl2rgb(
