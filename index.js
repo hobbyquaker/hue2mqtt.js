@@ -8,6 +8,7 @@ const pjson = require('persist-json')('hue2mqtt');
 const hsl2rgb = require('./hsl2rgb.js');
 const config = require('./config.js');
 const pkg = require('./package.json');
+const color = require('color');
 
 let mqtt;
 let mqttConnected = false;
@@ -168,6 +169,16 @@ function setLightState(name, state) {
     }
     if (id) {
         log.debug('hue > setLightState', id, state);
+        if (state.rgb) {
+          try {
+            const c = color(state.rgb).hsl()
+            state.hue = c.hue
+            state.sat = c.saturationl
+            delete state.rgb
+          } catch (err) {
+            log.error('Error converting color %j', err)
+          }
+        }
         hue.setLightState(id, state, (err, res) => {
             if (err) {
                 log.error('setLightState', err.toString());
